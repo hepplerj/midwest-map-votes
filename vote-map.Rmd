@@ -24,8 +24,8 @@ library(htmlwidgets)
 
 library(readr)
 # Read in data and join to shapefile
-datafile <- "~/Desktop/github/county_elections/2016_US_County_Level_Presidential_Results.csv"
-flippedCounties <- "~/Desktop/github/county_elections/US_County_Level_Presidential_Results_08-16.csv"
+datafile <- "data/2016_US_County_Level_Presidential_Results.csv"
+flippedCounties <- "data/US_County_Level_Presidential_Results_08-16.csv"
 election <- read_csv(datafile)
 flipped <- read_csv(flippedCounties)
 
@@ -50,14 +50,23 @@ midwestFlippedData <- merge(midwestMap, flipped, by.x = "combined_fips", by.y = 
 ## if 2012 dem >= 2012 dem = incumbent
 ## if 2012 gop >= 2012 gop = incumbent
 ## if 2012 gop < 2016 gop = flipped
+## 1 = dem flip
+## 2 = gop flip
+## 3 = incumbent
 # TODO: fix this function
+midwestFlippedData@data$flipped_counties <- 
+  ifelse(midwestFlippedData@data$dem_2016 > midwestFlippedData@data$gop_2016 &
+        midwestFlippedData@data$dem_2008 < midwestFlippedData@data$gop_2008, 1,
+        ifelse(midwestFlippedData@data$dem_2016 < midwestFlippedData@data$gop_2016 &
+               midwestFlippedData@data$dem_2008 > midwestFlippedData@data$gop_2008, 2, 0))
+        
+               ifelse(midwestFlippedData@data$dem_2016 > midwestFlippedData@data$gop_2016 &
+                        midwestFlippedData@data$dem_2008 > midwestFlippedData@data$gop_2008, 0,
+                      ifelse(midwestFlippedData@data$dem_2016 < midwestFlippedData@data$gop_2016 &
+                               midwestFlippedData@data$dem_2008 < midwestFlippedData@data$gop_2012, 0, 1))))
+
+
 midwestFlippedData@data$flipped_counties <-
-  ifelse(
-    midwestFlippedData@data$dem_2016 > midwestFlippedData@data$gop_2016 &
-      midwestFlippedData@data$dem_2012 < midwestFlippedData@data$gop_2012
-  )
-
-
   if (midwestFlippedData@data$dem_2016 > midwestFlippedData@data$gop_2016 &
       midwestFlippedData@data$dem_2012 < midwestFlippedData@data$gop_2012) {
     as.integer(1)
