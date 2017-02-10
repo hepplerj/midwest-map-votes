@@ -42,9 +42,12 @@ midwestPopup <- paste0("<b>", "County: ", "</b>", midwestMap@data$county_name, "
                        "<b>", "Dem votes: ", "</b>", midwestMap@data$votes_dem, "<br>",
                        "<b>", "Difference: ", "</b>", midwestMap@data$diff, "<br>")
 
+baseMap <- "https://api.mapbox.com/styles/v1/hepplerj/cih5dktre003ba0m3p7raqa7p/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGVwcGxlcmoiLCJhIjoiMjNqTEVBNCJ9.pGqKqkUDlcFmKMPeoARwkg"
+mbAttribution <- "© <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+
 # Map
 midwestResults <- leaflet(shp_data) %>%
-  addProviderTiles("CartoDB.Positron") %>%
+  addTiles(urlTemplate = baseMap, attribution = mbAttribution) %>%
   addPolygons(stroke = TRUE,
               smoothFactor = 0.2,
               weight = 1,
